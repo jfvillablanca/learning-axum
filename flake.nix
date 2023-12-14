@@ -37,6 +37,7 @@
               packages = [
                 cargo-pretty-test
               ] ++ (with pkgs; [
+                openssl
                 cargo-watch
               ]);
             }
