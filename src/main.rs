@@ -1,15 +1,14 @@
-use std::net::SocketAddr;
-
 use axum::{response::Html, routing::get, Router};
+use tokio::net::TcpListener;
 
 #[tokio::main]
-async fn main() {
-    let routes = Router::new().route("/", get(|| async { Html("<h1>Hello World</h1>") }));
+pub async fn main() {
+    let app = Router::new().route("/", get(hello));
 
-    let addr = SocketAddr::from(([127, 0, 0, 1], 6969));
-    println!("=>> Listening on {addr}\n");
-    axum::Server::bind(&addr)
-        .serve(routes.into_make_service())
-        .await
-        .unwrap();
+    let listener = TcpListener::bind("0.0.0.0:6969").await.unwrap();
+    axum::serve(listener, app).await.unwrap();
+}
+
+pub async fn hello() -> Html<String> {
+    Html("<h1>Hello World</h1>".into())
 }
